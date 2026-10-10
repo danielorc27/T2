@@ -29,6 +29,17 @@ def test_una_validacion_paga_tarifa_completa():
     assert cuerpo["cobros"][0]["tipo"] == "tarifa"
 
 
+def test_lista_vacia_de_validaciones_responde_200_sin_cobros():
+    r = cliente.post(
+        "/tarifas/calcular",
+        json={"tarjeta": "T-TEST-003", "perfil": "general", "validaciones": []},
+    )
+    assert r.status_code == 200
+    cuerpo = r.json()
+    assert cuerpo["cobros"] == []
+    assert cuerpo["total"] == 0
+
+
 def test_historial_registra_el_calculo():
     cliente.post(
         "/tarifas/calcular",
